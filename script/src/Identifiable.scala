@@ -5,4 +5,4 @@ object Identifiable:
   extension [V](idfs: Iterable[V])
     def ids[Id](using V <:< Identifiable[Id]): Set[Id] = idfs.map(_.id).toSet
     def toIdMap[Id](using V <:< Identifiable[Id]): Map[Id, V] = idfs.map(idf => idf.id -> idf).toMap
-    def sortByIds[Id](using V <:< Identifiable[Id], Id => Comparable[Id]): Seq[V] = idfs.toSeq.sortBy(_.id)
+    def sortByIds[Id](using V <:< Identifiable[Id], Ordering[Id]): Seq[V] = idfs.toSeq.sortBy(_.id)
