@@ -56,6 +56,7 @@ class Storage[Id : Ordering, Entry <: Identifiable[Id] : ReadWriter](jsonFileStr
   inline def size: Int = list.size
   inline def ids: Set[Id] = list.ids
   inline def get(id: Id): Option[Entry] = list.find(_.id == id)
+  inline def exists(id: Id): Boolean = list.exists(_.id == id)
 
   def add(newEntry: Entry): Boolean =
     val oldEntries = list
