@@ -1,20 +1,30 @@
 import upickle.default.*
 import scala.util.chaining.scalaUtilChainingOps
-
+import java.time.Instant
 import Logger.*
 
-
-final case class Entry(id: Int,
-                       title: String,
-                       description: String,
-                       link: String,
-                       mediaType: String,
-                       authorId: String,
-                       categoryId: String,
-                       tags: List[String],
-                       created: String,
-                       added: String
-                      ) extends Identifiable[Int] derives ReadWriter
+final case class Entry(id:          Int,
+                       title:       String,
+                       link:        String,
+                       mediaType:   String = "",
+                       authorId:    String = "",
+                       categoryId:  String = "",
+                       tags:        List[String] = Nil,
+                       description: String = "",
+                       created:     String = "",
+                       added:       String = Instant.now().toString
+                      ) extends Identifiable[Int] derives ReadWriter:
+  def prettyStr: String =
+    val sb = new StringBuilder
+    sb.append("id: ").append(id).append(", title: ").append(title).append(", link: ").append(link)
+    if mediaType.nonEmpty then sb.append(", media: ").append(mediaType)
+    if authorId.nonEmpty then sb.append(", author: ").append(authorId)
+    if categoryId.nonEmpty then sb.append(", category: ").append(categoryId)
+    if tags.nonEmpty then sb.append(", tags: ").append(tags.mkString("|"))
+    if description.nonEmpty then sb.append(", description: ").append(description)
+    if created.nonEmpty then sb.append(", created: ").append(created)
+    if added.nonEmpty then sb.append(", added: ").append(added)
+    sb.result
 
 final class EntryStorage(jsonFileStr: String) extends Storage[Int, Entry](jsonFileStr)
 
@@ -60,3 +70,7 @@ object Entry:
       error(s"No entry with the id $id")
       None
     }
+
+  def show(entry: Entry): Unit = info(entry.prettyStr)
+  def showAll(entries: List[Entry]): Unit = info("\n" + entries.map(_.prettyStr).mkString("\n"))
+  def show(entries: Entry*): Unit = showAll(entries.toList)

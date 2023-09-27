@@ -7,6 +7,11 @@ final case class Category(id: String, name: String, parentId: String)
   extends Identifiable[String]
   derives ReadWriter:
   def isTopCategory: Boolean = parentId == ""
+  def prettyStr: String =
+    val sb = new StringBuilder
+    sb.append("id: ").append(id).append(", name: ").append(name)
+    if parentId.nonEmpty then sb.append(", parent: ").append(parentId)
+    sb.result
 
 final class CategoryStorage(jsonFileStr: String)
   extends Storage[String, Category](jsonFileStr)
@@ -73,3 +78,7 @@ object Category:
 
   def topCategories: List[Category] = storage.list.filter(_.isTopCategory)
   def children(parentId: String): List[Category] = storage.list.filter(_.parentId == parentId)
+
+  def show(cat: Category): Unit = info(cat.prettyStr)
+  def showAll(cats: List[Category]): Unit = info("\n" + cats.map(_.prettyStr).mkString("\n"))
+  def show(cats: Category*): Unit = showAll(cats.toList)
