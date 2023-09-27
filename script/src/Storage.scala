@@ -36,7 +36,7 @@ class Storage[Id : Ordering, Entry <: Identifiable[Id] : ReadWriter](jsonFileStr
   }
 
   private def dump(lines: List[Entry]): Either[String, Unit] = withFilePath { path =>
-    val jsonStr = write(lines.sortByIds)
+    val jsonStr = write(lines.sortByIds, indent = 2)
     Files.writeString(path, jsonStr, CREATE, WRITE, TRUNCATE_EXISTING)
   }
 
@@ -98,7 +98,7 @@ class Storage[Id : Ordering, Entry <: Identifiable[Id] : ReadWriter](jsonFileStr
       val (validEntries, notStoredEntries) = entries.partition(e => ids.contains(e.id))
       if notStoredEntries.nonEmpty then
         error(s"Some of the entries you try to modify are not in the storage: $notStoredEntries")
-      if validEntries.nonEmpty then  
+      if validEntries.nonEmpty then
         val newIds = validEntries.ids
         val remainingEntries = oldEntries.filterNot(e => newIds.contains(e.id))
         dump(validEntries.toList ::: remainingEntries)
@@ -137,8 +137,8 @@ class Storage[Id : Ordering, Entry <: Identifiable[Id] : ReadWriter](jsonFileStr
       if notInStorage.nonEmpty then
         error(s"Some of the ids are of entries that are not in the storage: $ids")
       val entriesToRemain = entries.filterNot(entry => idSet.contains(entry.id))
-      if entriesToRemain.size < entries.size then 
-        if entriesToRemain.nonEmpty then 
+      if entriesToRemain.size < entries.size then
+        if entriesToRemain.nonEmpty then
           dump(entriesToRemain)
         else
-          reset()  
+          reset()

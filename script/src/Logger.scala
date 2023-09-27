@@ -35,10 +35,24 @@ object Logger:
 
   private var instance: Option[Logger[_]] = None
 
+  private var logLevel: Level = Level.ALL
+
+  def setLogLevel(level: Level): Unit =
+    logLevel = level
+
+  def setSilent(): Unit = setLogLevel(Level.OFF)
+  def isSilent: Boolean =
+    logLevel == Level.OFF
+  def setLoud(): Unit = setLogLevel(Level.ALL)
+
   def init[T](tag: String = "", maxLines: Int = 15): Unit =
     instance = Some(new Logger(tag, maxLines))
 
-  def log(level: Level, str: String): Unit = instance.foreach(_.log(level, str))
+  def log(level: Level, str: String): Unit =
+    if level.intValue >= logLevel.intValue then
+      if instance.isEmpty then init()
+      instance.foreach(_.log(level, str))
+
   def error(str: String): Unit = log(Level.SEVERE, str)
   def warn(str: String): Unit = log(Level.WARNING, str)
   def info(str: String): Unit = log(Level.INFO, str)
