@@ -12,6 +12,7 @@ enum MediaType:
   case Example
   case Library
   case App
+  case Documentation
   case Image
   case Unknown
 
