@@ -142,3 +142,4 @@ class Storage[Id : Ordering, Entry <: Identifiable[Id] : ReadWriter](jsonFileStr
           dump(entriesToRemain)
         else
           reset()
+

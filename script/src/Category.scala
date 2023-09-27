@@ -31,11 +31,6 @@ object Category:
 
   private lazy val storage = customStorage.getOrElse(CategoryStorage("category.json"))
 
-  def add(name: String): Category = Category(name).tap(add)
-
-  def add(names: String*): List[Category] =
-    names.toList.map(Category(_)).tap { _.foreach(add) }
-
   def add(cat: Category): Boolean =
     if !cat.isTopCategory && !storage.exists(cat.parentId) then
       error(s"There is no parent category with id ${cat.parentId} for the new category $cat")
@@ -46,6 +41,13 @@ object Category:
         false
       case None =>
         storage.add(cat)
+
+  def add(name: String): Category = Category(name).tap(add)
+
+  def add(names: String*): List[Category] =
+    names.toList.map(Category(_)).tap {
+      _.foreach(add)
+    }
 
   def add(cats: Category*): Unit = cats.foreach(add)
 
@@ -63,7 +65,11 @@ object Category:
   def size: Int = storage.size
   def isEmpty: Boolean = storage.isEmpty
   def nonEmpty: Boolean = storage.nonEmpty
-  def get(id: String): Option[Category] = storage.get(id)
+  def get(id: String): Option[Category] =
+    storage.get(id).orElse {
+      error(s"No category with the id $id")
+      None
+    }
 
   def topCategories: List[Category] = storage.list.filter(_.isTopCategory)
   def children(parentId: String): List[Category] = storage.list.filter(_.parentId == parentId)

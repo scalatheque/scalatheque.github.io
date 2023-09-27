@@ -8,7 +8,7 @@ def main(): Unit =
   val cat1 = Category("cat1", "Category 1")
   val cat2 = Category("cat2", "Category 2", "cat1")
   storage.add(cat1, cat2)
-  Logger.info(storage.list)
+  Logger.info(storage.list.mkString(", "))
   storage.reset()
 
 /*
