@@ -10,8 +10,8 @@ final case class Author(id:      String,
                         website: String,
                         youtube: String,
                         avatar:  String
-                       ) extends Identifiable[String] derives ReadWriter:
-  def prettyStr: String =
+                       ) extends Identifiable[String] with PrettyStr derives ReadWriter:
+  override def prettyStr: String =
     val sb = new StringBuilder
     sb.append("id: ").append(id).append(", name: ").append(name)
     if email.nonEmpty then sb.append(", email: ").append(email)
@@ -23,7 +23,7 @@ final case class Author(id:      String,
 
 final class AuthorStorage(jsonFileStr: String) extends Storage[String, Author](jsonFileStr)
 
-object Author:
+object Author extends PrettyStrCompanion[Author]:
   def apply(name: String, email: String = "", twitter: String = "", website: String = "", youtube: String = "", avatar: String = ""): Author =
     val id = nameToId(name)
     new Author(id, name, email, twitter, website, youtube, avatar)
@@ -84,7 +84,3 @@ object Author:
     get(id).map { author =>
       author.copy(avatar = newAvatar).tap(storage.modify)
     }
-
-  def show(author: Author): Unit = info(author.prettyStr)
-  def showAll(authors: List[Author]): Unit = info("\n" + authors.map(_.prettyStr).mkString("\n"))
-  def show(authors: Author*): Unit = showAll(authors.toList)  

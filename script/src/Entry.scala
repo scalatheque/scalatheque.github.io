@@ -13,8 +13,8 @@ final case class Entry(id:          Int,
                        description: String = "",
                        created:     String = "",
                        added:       String = Instant.now().toString
-                      ) extends Identifiable[Int] derives ReadWriter:
-  def prettyStr: String =
+                      ) extends Identifiable[Int] with PrettyStr derives ReadWriter:
+  override def prettyStr: String =
     val sb = new StringBuilder
     sb.append("id: ").append(id).append(", title: ").append(title).append(", link: ").append(link)
     if mediaType.nonEmpty then sb.append(", media: ").append(mediaType)
@@ -28,7 +28,7 @@ final case class Entry(id:          Int,
 
 final class EntryStorage(jsonFileStr: String) extends Storage[Int, Entry](jsonFileStr)
 
-object Entry:
+object Entry extends PrettyStrCompanion[Entry]:
   private var customStorage: Option[EntryStorage] = None
 
   // IMPORTANT: You have to set the custom storage before the first use
@@ -39,7 +39,3 @@ object Entry:
   private lazy val storage = customStorage.getOrElse(EntryStorage("entry.json"))
 
   export storage.{add, remove, modify, addOrModify, list, reset, size, isEmpty, nonEmpty, get}
-
-  def show(entry: Entry): Unit = info(entry.prettyStr)
-  def showAll(entries: List[Entry]): Unit = info("\n" + entries.map(_.prettyStr).mkString("\n"))
-  def show(entries: Entry*): Unit = showAll(entries.toList)
