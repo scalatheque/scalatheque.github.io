@@ -50,22 +50,10 @@ object Author:
     names.toList.map(Author(_)).tap {
       _.foreach(add)
     }
-
+    
   def add(authors: Author*): Unit = authors.foreach(add)
-  def modify(author: Author): Boolean = storage.modify(author)
-  def modify(authors: Author*): Unit = storage.modifyAll(authors.toList)
-  def remove(id: String): Boolean = storage.remove(id)
-  def remove(ids: String*): Unit = storage.removeAll(ids.toList)
-  def list: List[Author] = storage.list
-  def reset(): Unit = storage.reset()
-  def size: Int = storage.size
-  def isEmpty: Boolean = storage.isEmpty
-  def nonEmpty: Boolean = storage.nonEmpty
-  def get(id: String): Option[Author] =
-    storage.get(id).orElse {
-      error(s"No author with the id $id")
-      None
-    }
+
+  export storage.{remove, modify, addOrModify, list, reset, size, isEmpty, nonEmpty, get}
 
   def changeName(id: String, newName: String): Option[Author] =
     get(id).map { author =>

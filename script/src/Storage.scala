@@ -48,15 +48,17 @@ class Storage[Id : Ordering, Entry <: Identifiable[Id] : ReadWriter](jsonFileStr
   }
 
   def reset(): Unit = withFilePath { Files.deleteIfExists }
-
   def list: List[Entry] = readIn().getOrElse(List.empty[Entry])
-
-  inline def isEmpty: Boolean = list.isEmpty
-  inline def nonEmpty: Boolean = list.nonEmpty
-  inline def size: Int = list.size
-  inline def ids: Set[Id] = list.ids
-  inline def get(id: Id): Option[Entry] = list.find(_.id == id)
-  inline def exists(id: Id): Boolean = list.exists(_.id == id)
+  def isEmpty: Boolean = list.isEmpty
+  def nonEmpty: Boolean = list.nonEmpty
+  def size: Int = list.size
+  def ids: Set[Id] = list.ids
+  def get(id: Id): Option[Entry] =
+    list.find(_.id == id).orElse {
+    error(s"No entry with the id $id in $jsonFileStr")
+    None
+  }
+  def exists(id: Id): Boolean = list.exists(_.id == id)
 
   def add(newEntry: Entry): Boolean =
     val oldEntries = list

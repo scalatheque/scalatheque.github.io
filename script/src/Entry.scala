@@ -38,38 +38,7 @@ object Entry:
 
   private lazy val storage = customStorage.getOrElse(EntryStorage("entry.json"))
 
-  def add(entry: Entry): Boolean = storage.get(entry.id) match
-    case Some(id) =>
-      error(s"An entry with id $id already exists")
-      false
-    case None =>
-      storage.add(entry)
-
-  def add(entries: Entry*): Unit = entries.foreach(add)
-
-  def modify(entry: Entry): Boolean = storage.modify(entry)
-
-  def modify(entries: Entry*): Unit = storage.modifyAll(entries.toList)
-
-  def remove(id: Int): Boolean = storage.remove(id)
-
-  def remove(ids: Int*): Unit = storage.removeAll(ids.toList)
-
-  def list: List[Entry] = storage.list
-
-  def reset(): Unit = storage.reset()
-
-  def size: Int = storage.size
-
-  def isEmpty: Boolean = storage.isEmpty
-
-  def nonEmpty: Boolean = storage.nonEmpty
-
-  def get(id: Int): Option[Entry] =
-    storage.get(id).orElse {
-      error(s"No entry with the id $id")
-      None
-    }
+  export storage.{add, remove, modify, addOrModify, list, reset, size, isEmpty, nonEmpty, get}
 
   def show(entry: Entry): Unit = info(entry.prettyStr)
   def showAll(entries: List[Entry]): Unit = info("\n" + entries.map(_.prettyStr).mkString("\n"))

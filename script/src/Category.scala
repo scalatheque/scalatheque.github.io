@@ -40,12 +40,8 @@ object Category:
     if !cat.isTopCategory && !storage.exists(cat.parentId) then
       error(s"There is no parent category with id ${cat.parentId} for the new category $cat")
       false
-    else storage.get(cat.id) match
-      case Some(id) =>
-        error(s"A category with id $id already exists")
-        false
-      case None =>
-        storage.add(cat)
+    else
+      storage.add(cat)
 
   def add(name: String): Category = Category(name).tap(add)
 
@@ -60,21 +56,8 @@ object Category:
     storage.get(id).map { cat =>
       cat.copy(name = newName).tap(storage.modify)
     }
-
-  def remove(id: String): Boolean = storage.remove(id)
-
-  def remove(ids: String*): Unit = storage.removeAll(ids.toList)
-
-  def list: List[Category] = storage.list
-  def reset(): Unit = storage.reset()
-  def size: Int = storage.size
-  def isEmpty: Boolean = storage.isEmpty
-  def nonEmpty: Boolean = storage.nonEmpty
-  def get(id: String): Option[Category] =
-    storage.get(id).orElse {
-      error(s"No category with the id $id")
-      None
-    }
+  
+  export storage.{remove, modify, addOrModify, list, reset, size, isEmpty, nonEmpty, get}
 
   def topCategories: List[Category] = storage.list.filter(_.isTopCategory)
   def children(parentId: String): List[Category] = storage.list.filter(_.parentId == parentId)
