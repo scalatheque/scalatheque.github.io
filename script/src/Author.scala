@@ -1,8 +1,6 @@
 import upickle.default.*
 import scala.util.chaining.scalaUtilChainingOps
 
-import Logger.*
-
 final case class Author(id:      String,
                         name:    String,
                         email:   String,
@@ -37,50 +35,41 @@ object Author extends PrettyStrCompanion[Author]:
 
   private lazy val storage = customStorage.getOrElse(AuthorStorage("author.json"))
 
-  def add(author: Author): Boolean = storage.get(author.id) match
-    case Some(id) =>
-      error(s"An author with id $id already exists")
-      false
-    case None =>
-      storage.add(author)
+  export storage.{remove, removeAll, modify, addOrModify, list, size, isEmpty, nonEmpty, get, exists, ids}
 
+  private var current: Option[String] = None
+
+  def use(author: Author): Unit =
+    current = Some(author.id)
+
+  def reset(): Unit =
+    storage.reset()
+    current = None
+
+  def show(): Unit = current.flatMap(get).foreach(show)
+
+  def add(author: Author): Boolean =
+    storage.add(author).tap { res => if res then use(author) }
   def add(name: String): Author = Author(name).tap(add)
-
-  def add(names: String*): List[Author] =
-    names.toList.map(Author(_)).tap {
-      _.foreach(add)
-    }
-    
+  def add(names: String*): List[Author] = names.toList.map(Author(_)).tap { _.foreach(add) }
   def add(authors: Author*): Unit = authors.foreach(add)
 
-  export storage.{remove, modify, addOrModify, list, reset, size, isEmpty, nonEmpty, get}
+  private def changeField(id: String, change: Author => Author): Option[Author] = get(id).map { change(_).tap(modify) }
 
-  def changeName(id: String, newName: String): Option[Author] =
-    get(id).map { author =>
-      author.copy(name = newName).tap(storage.modify)
-    }
+  def changeName(id: String, newName: String): Option[Author] = changeField(id, _.copy(name = newName))
+  def changeName(newName: String): Option[Author] = current.flatMap{ changeName(_, newName) }
 
-  def changeEmail(id: String, newEmail: String): Option[Author] =
-    get(id).map { author =>
-      author.copy(email = newEmail).tap(storage.modify)
-    }
+  def changeEmail(id: String, newEmail: String): Option[Author] = changeField(id, _.copy(email = newEmail))
+  def changeEmail(newEmail: String): Option[Author] = current.flatMap{ changeEmail(_, newEmail) }
 
-  def changeTwitter(id: String, newTwitter: String): Option[Author] =
-    get(id).map { author =>
-      author.copy(twitter = newTwitter).tap(storage.modify)
-    }
+  def changeTwitter(id: String, newTwitter: String): Option[Author] = changeField(id, _.copy(twitter = newTwitter))
+  def changeTwitter(newTwitter: String): Option[Author] = current.flatMap{ changeTwitter(_, newTwitter) }
 
-  def changeWebsite(id: String, newWebsite: String): Option[Author] =
-    get(id).map { author =>
-      author.copy(website = newWebsite).tap(storage.modify)
-    }
+  def changeWebsite(id: String, newWebsite: String): Option[Author] = changeField(id, _.copy(website = newWebsite))
+  def changeWebsite(newWebsite: String): Option[Author] = current.flatMap{ changeWebsite(_, newWebsite) }
 
-  def changeYoutube(id: String, newYoutube: String): Option[Author] =
-    get(id).map { author =>
-      author.copy(youtube = newYoutube).tap(storage.modify)
-    }
+  def changeYoutube(id: String, newYoutube: String): Option[Author] = changeField(id, _.copy(youtube = newYoutube))
+  def changeYoutube(newYoutube: String): Option[Author] = current.flatMap{ changeYoutube(_, newYoutube) }
 
-  def changeAvatar(id: String, newAvatar: String): Option[Author] =
-    get(id).map { author =>
-      author.copy(avatar = newAvatar).tap(storage.modify)
-    }
+  def changeAvatar(id: String, newAvatar: String): Option[Author] = changeField(id, _.copy(avatar = newAvatar))
+  def changeAvatar(newAvatar: String): Option[Author] = current.flatMap{ changeAvatar(_, newAvatar) }

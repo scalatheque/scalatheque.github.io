@@ -17,15 +17,9 @@ final class CategoryStorage(jsonFileStr: String)
   extends Storage[String, Category](jsonFileStr)
 
 object Category extends PrettyStrCompanion[Category]:
-  def apply(id: String, name: String): Category =
-    new Category(id = id, name = name, parentId = "")
+  def apply(id: String, name: String): Category = new Category(id = id, name = name, parentId = "")
 
-  def apply(name: String): Category =
-    new Category(
-      id = nameToId(name),
-      name = name,
-      parentId = ""
-    )
+  def apply(name: String): Category = new Category(id = nameToId(name), name = name, parentId = "")
 
   private var customStorage: Option[CategoryStorage] = None
 
@@ -36,28 +30,40 @@ object Category extends PrettyStrCompanion[Category]:
 
   private lazy val storage = customStorage.getOrElse(CategoryStorage("category.json"))
 
+  export storage.{remove, removeAll, modify, addOrModify, list, size, isEmpty, nonEmpty, get, exists, ids}
+
+  private var current: Option[String] = None
+
+  def use(cat: Category): Unit =
+    current = Some(cat.id)
+
+  def reset(): Unit =
+    storage.reset()
+    current = None
+
+  def show(): Unit = current.flatMap(get).foreach(show)
+
   def add(cat: Category): Boolean =
-    if !cat.isTopCategory && !storage.exists(cat.parentId) then
+    if !cat.isTopCategory && !exists(cat.parentId) then
       error(s"There is no parent category with id ${cat.parentId} for the new category $cat")
       false
     else
-      storage.add(cat)
+      storage.add(cat).tap { res => if res then use(cat) }
 
   def add(name: String): Category = Category(name).tap(add)
-
-  def add(names: String*): List[Category] =
-    names.toList.map(Category(_)).tap {
-      _.foreach(add)
-    }
-
+  def add(names: String*): List[Category] = names.toList.map(Category(_)).tap { _.foreach(add) }
   def add(cats: Category*): Unit = cats.foreach(add)
 
-  def changeName(id: String, newName: String): Option[Category] =
-    storage.get(id).map { cat =>
-      cat.copy(name = newName).tap(storage.modify)
+  private def changeField(id: String, change: Category => Category): Option[Category] =
+    get(id).map {
+      change(_).tap(modify)
     }
 
-  export storage.{remove, modify, addOrModify, list, reset, size, isEmpty, nonEmpty, get}
+  def changeName(id: String, newName: String): Option[Category] = changeField(id, _.copy(name = newName))
+  def changeName(newName: String): Option[Category] = current.flatMap{ changeName(_, newName) }
 
-  def topCategories: List[Category] = storage.list.filter(_.isTopCategory)
-  def children(parentId: String): List[Category] = storage.list.filter(_.parentId == parentId)
+  def changeParent(id: String, newParentId: String): Option[Category] = changeField(id, _.copy(parentId = newParentId))
+  def changeParent(newParentId: String): Option[Category] = current.flatMap { changeParent(_, newParentId) }
+
+  def topCategories: List[Category] = list.filter(_.isTopCategory)
+  def children(parentId: String): List[Category] = list.filter(_.parentId == parentId)
