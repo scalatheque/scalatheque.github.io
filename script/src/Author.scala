@@ -35,7 +35,7 @@ object Author extends PrettyStrCompanion[Author]:
 
   private lazy val storage = customStorage.getOrElse(AuthorStorage("author.json"))
 
-  export storage.{remove, removeAll, modify, addOrModify, list, size, isEmpty, nonEmpty, get, exists, ids}
+  export storage.{modify, addOrModify, list, size, isEmpty, nonEmpty, get, exists, ids}
 
   private var current: Option[String] = None
 
@@ -53,6 +53,11 @@ object Author extends PrettyStrCompanion[Author]:
   def add(name: String): Author = Author(name).tap(add)
   def add(names: String*): List[Author] = names.toList.map(Author(_)).tap { _.foreach(add) }
   def add(authors: Author*): Unit = authors.foreach(add)
+
+  def remove(id: String): Boolean =
+    storage.remove(id).tap { res => if res then current = None }
+  inline def remove(ids: String*): Unit = removeAll(ids.toList)
+  def removeAll(ids: Iterable[String]): Unit = ids.foreach(remove)
 
   private def changeField(id: String, change: Author => Author): Option[Author] = get(id).map { change(_).tap(modify) }
 

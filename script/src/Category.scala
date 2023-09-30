@@ -30,7 +30,7 @@ object Category extends PrettyStrCompanion[Category]:
 
   private lazy val storage = customStorage.getOrElse(CategoryStorage("category.json"))
 
-  export storage.{remove, removeAll, modify, addOrModify, list, size, isEmpty, nonEmpty, get, exists, ids}
+  export storage.{modify, addOrModify, list, size, isEmpty, nonEmpty, get, exists, ids}
 
   private var current: Option[String] = None
 
@@ -53,6 +53,11 @@ object Category extends PrettyStrCompanion[Category]:
   def add(name: String): Category = Category(name).tap(add)
   def add(names: String*): List[Category] = names.toList.map(Category(_)).tap { _.foreach(add) }
   def add(cats: Category*): Unit = cats.foreach(add)
+
+  def remove(id: String): Boolean =
+    storage.remove(id).tap { res => if res then current = None }
+  inline def remove(ids: String*): Unit = removeAll(ids.toList)
+  def removeAll(ids: Iterable[String]): Unit = ids.foreach(remove)
 
   private def changeField(id: String, change: Category => Category): Option[Category] =
     get(id).map {

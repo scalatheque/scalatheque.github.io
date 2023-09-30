@@ -38,7 +38,7 @@ object Entry extends PrettyStrCompanion[Entry]:
 
   private lazy val storage = customStorage.getOrElse(EntryStorage("entry.json"))
 
-  export storage.{remove, removeAll, modify, addOrModify, list, size, isEmpty, nonEmpty, get, exists, ids}
+  export storage.{modify, addOrModify, list, size, isEmpty, nonEmpty, get, exists, ids}
 
   private var current: Option[Long] = None
 
@@ -59,12 +59,27 @@ object Entry extends PrettyStrCompanion[Entry]:
 
   private def getAndIncId(): Long = firstFreeId().tap { id => _firstFreeId = id + 1L }
 
-  def add(title: String, link: String, mediaType: MediaType = MediaType.Unknown, authorId: String = ""): Entry =
+  private def treatTags(tags: Iterable[String]): List[String] = tags.toList.map(_.toLowerCase.trim).sorted
+
+  def add(title: String,
+          link: String,
+          mediaType: MediaType = MediaType.Unknown,
+          authorId: String = "",
+          categoryId: String = "",
+          tags: List[String] = Nil,
+          description: String = "",
+          created: String = ""
+         ): Entry =
     val entry = new Entry(id = getAndIncId(), title = title, link = link, mediaType = mediaType.toString,
-                          authorId = authorId, categoryId = "", tags = Nil, description = "", created = "",
+                          authorId = authorId, categoryId = "", tags = treatTags(tags), description = "", created = "",
                           added = Instant.now().toString)
     if storage.add(entry) then use(entry)
     entry
+
+  def remove(id: Long): Boolean =
+    storage.remove(id).tap { res => if res then current = None}
+  inline def remove(ids: Long*): Unit = removeAll(ids.toList)
+  def removeAll(ids: Iterable[Long]): Unit = ids.foreach(remove)
 
   private def changeField(id: Long, change: Entry => Entry): Option[Entry] = get(id).map { change(_).tap(modify) }
 
@@ -88,3 +103,28 @@ object Entry extends PrettyStrCompanion[Entry]:
 
   def changeCreated(id: Long, newCreated: Instant): Option[Entry] = changeField(id, _.copy(created = newCreated.toString))
   def changeCreated(newCreated: Instant): Option[Entry] = current.flatMap { changeCreated(_, newCreated) }
+
+  def changeTags(id: Long, newTags: String*): Option[Entry] = changeField(id, _.copy(tags = treatTags(newTags)))
+  def changeTags(newTags: String*): Option[Entry] = current.flatMap { id =>
+    changeField(id, _.copy(tags = treatTags(newTags)))
+  }
+
+  def addTag(id: Long, tag: String): Option[Entry] =
+    changeField(id, entry => entry.copy(tags = treatTags(tag :: entry.tags)))
+  def addTag(tag: String): Option[Entry] = current.flatMap { addTag(_, tag) }
+
+  def removeTag(id: Long, tag: String): Option[Entry] = get(id) match {
+    case None =>
+      None
+    case Some(entry) if !entry.tags.contains(tag) =>
+      error(s"There is no tag $tag in the entry $entry")
+      None
+    case Some(entry) =>
+      modify(entry.copy(tags = treatTags(entry.tags.toSet - tag)))
+      Some(entry)
+  }
+  def removeTag(tag: String): Option[Entry] = current.flatMap(removeTag(_, tag))
+
+  def resetTags(id: Long): Option[Entry] = changeField(id, _.copy(tags = Nil))
+  def resetTags(): Option[Entry] = current.flatMap(resetTags)
+
