@@ -61,18 +61,18 @@ object Entry extends PrettyStrCompanion[Entry]:
 
   private def treatTags(tags: Iterable[String]): List[String] = tags.toList.map(_.toLowerCase.trim).sorted
 
-  def add(title: String,
-          link: String,
-          mediaType: MediaType = MediaType.Unknown,
-          authorId: String = "",
-          categoryId: String = "",
-          tags: List[String] = Nil,
-          description: String = "",
-          created: String = ""
+  def add(title:        String,
+          link:         String,
+          mediaType:    MediaType = MediaType.Unknown,
+          authorId:     String = "",
+          categoryId:   String = "",
+          tags:         List[String] = Nil,
+          description:  String = "",
+          created:      String = ""
          ): Entry =
     val entry = new Entry(id = getAndIncId(), title = title, link = link, mediaType = mediaType.toString,
-                          authorId = authorId, categoryId = "", tags = treatTags(tags), description = "", created = "",
-                          added = Instant.now().toString)
+                          authorId = authorId, categoryId = categoryId, tags = treatTags(tags),
+                          description = description, created = created, added = now())
     if storage.add(entry) then use(entry)
     entry
 
@@ -101,8 +101,9 @@ object Entry extends PrettyStrCompanion[Entry]:
   def changeDescription(id: Long, newDescription: String): Option[Entry] = changeField(id, _.copy(description = newDescription))
   def changeDescription(newDescription: String): Option[Entry] = current.flatMap { changeDescription(_, newDescription) }
 
-  def changeCreated(id: Long, newCreated: Instant): Option[Entry] = changeField(id, _.copy(created = newCreated.toString))
-  def changeCreated(newCreated: Instant): Option[Entry] = current.flatMap { changeCreated(_, newCreated) }
+  def changeCreated(id: Long, year: Int, month: Int, day: Int): Option[Entry] =
+    changeField(id, _.copy(created = toStr(year, month, day)))
+  def changeCreated(year: Int, month: Int, day: Int): Option[Entry] = current.flatMap { changeCreated(_, year, month, day) }
 
   def changeTags(id: Long, newTags: String*): Option[Entry] = changeField(id, _.copy(tags = treatTags(newTags)))
   def changeTags(newTags: String*): Option[Entry] = current.flatMap { id =>
