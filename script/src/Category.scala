@@ -34,6 +34,8 @@ object Category extends PrettyStrCompanion[Category]:
 
   private var current: Option[String] = None
 
+  def getCurrent: Category = current.flatMap(get).get
+
   def use(cat: Category): Unit =
     current = Some(cat.id)
 
@@ -71,4 +73,5 @@ object Category extends PrettyStrCompanion[Category]:
   def changeParent(newParentId: String): Option[Category] = current.flatMap { changeParent(_, newParentId) }
 
   def topCategories: List[Category] = list.filter(_.isTopCategory)
-  def children(parentId: String): List[Category] = list.filter(_.parentId == parentId)
+  def children(parentId: String): List[Category] =
+    if parentId.isEmpty then Nil else list.filter(_.parentId == parentId)

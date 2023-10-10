@@ -41,6 +41,8 @@ object Entry extends PrettyStrCompanion[Entry]:
   export storage.{modify, addOrModify, list, size, isEmpty, nonEmpty, get, exists, ids}
 
   private var current: Option[Long] = None
+  
+  def getCurrent: Entry = current.flatMap(get).get
 
   def use(entry: Entry): Unit =
     current = Some(entry.id)
@@ -51,10 +53,10 @@ object Entry extends PrettyStrCompanion[Entry]:
 
   def show(): Unit = current.flatMap(get).foreach(show)
 
-  private var _firstFreeId: Long = -1
+  private var _firstFreeId: Long = 1L
 
   private def firstFreeId(): Long =
-    if _firstFreeId == -1 && nonEmpty then _firstFreeId = list.maxBy(_.id).id + 1L
+    if _firstFreeId == 1L && nonEmpty then _firstFreeId = list.maxBy(_.id).id + 1L
     _firstFreeId
 
   private def getAndIncId(): Long = firstFreeId().tap { id => _firstFreeId = id + 1L }
@@ -91,12 +93,30 @@ object Entry extends PrettyStrCompanion[Entry]:
 
   def changeType(id: Long, newType: MediaType): Option[Entry] = changeField(id, _.copy(mediaType = newType.toString))
   def changeType(newType: MediaType): Option[Entry] = current.flatMap { changeType(_, newType) }
+  def changeType(newType: String): Option[Entry] =
+    for {
+      entryId   <- current
+      mediaType =  MediaType(newType)
+      entry     <- changeType(entryId, mediaType)
+    } yield entry
 
   def changeAuthor(id: Long, newAuthor: Author): Option[Entry] = changeField(id, _.copy(authorId = newAuthor.id))
   def changeAuthor(newAuthor: Author): Option[Entry] = current.flatMap { changeAuthor(_, newAuthor) }
+  def changeAuthor(authorId: String): Option[Entry] =
+    for {
+      entryId <- current
+      author  <- Author.get(authorId)
+      entry   <- changeAuthor(entryId, author)
+    } yield entry
 
   def changeCategory(id: Long, newCategory: Category): Option[Entry] = changeField(id, _.copy(categoryId = newCategory.id))
   def changeCategory(newCategory: Category): Option[Entry] = current.flatMap { changeCategory(_, newCategory) }
+  def changeCategory(categoryId: String): Option[Entry] =
+    for {
+      entryId  <- current
+      category <- Category.get(categoryId)
+      entry    <- changeCategory(entryId, category)
+    } yield entry
 
   def changeDescription(id: Long, newDescription: String): Option[Entry] = changeField(id, _.copy(description = newDescription))
   def changeDescription(newDescription: String): Option[Entry] = current.flatMap { changeDescription(_, newDescription) }
@@ -129,3 +149,10 @@ object Entry extends PrettyStrCompanion[Entry]:
   def resetTags(id: Long): Option[Entry] = changeField(id, _.copy(tags = Nil))
   def resetTags(): Option[Entry] = current.flatMap(resetTags)
 
+  def byAuthor(authorId: String): List[Entry] = list.filter(_.authorId == authorId)
+  def by(author: Author): List[Entry] = byAuthor(author.id)
+  def byCategory(categoryId: String): List[Entry] = list.filter(_.categoryId == categoryId)
+  def by(category: Category): List[Entry] = byCategory(category.id)
+  def byTag(tag: String): List[Entry] = list.filter(_.tags.contains(tag))
+  def by(mediaType: MediaType): List[Entry] = list.filter(_.mediaType == mediaType.toString)
+  def byMediaType(mediaType: String): List[Entry] = by(MediaType(mediaType))

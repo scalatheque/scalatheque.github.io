@@ -38,6 +38,8 @@ object Author extends PrettyStrCompanion[Author]:
   export storage.{modify, addOrModify, list, size, isEmpty, nonEmpty, get, exists, ids}
 
   private var current: Option[String] = None
+  
+  def getCurrent: Author = current.flatMap(get).get
 
   def use(author: Author): Unit =
     current = Some(author.id)
