@@ -33,7 +33,7 @@ object Author extends PrettyStrCompanion[Author]:
     customStorage = Some(AuthorStorage(fileName))
     if resetAtStart then reset()
 
-  private lazy val storage = customStorage.getOrElse(AuthorStorage("author.json"))
+  private lazy val storage = customStorage.getOrElse(AuthorStorage(ScalathequePaths.AuthorJson))
 
   export storage.{modify, addOrModify, list, size, isEmpty, nonEmpty, get, exists, ids}
 

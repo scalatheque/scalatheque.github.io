@@ -36,7 +36,7 @@ object Entry extends PrettyStrCompanion[Entry]:
     customStorage = Some(EntryStorage(fileName))
     if resetAtStart then reset()
 
-  private lazy val storage = customStorage.getOrElse(EntryStorage("entry.json"))
+  private lazy val storage = customStorage.getOrElse(EntryStorage(ScalathequePaths.EntryJson))
 
   export storage.{modify, addOrModify, list, size, isEmpty, nonEmpty, get, exists, ids}
 
@@ -156,3 +156,6 @@ object Entry extends PrettyStrCompanion[Entry]:
   def byTag(tag: String): List[Entry] = list.filter(_.tags.contains(tag))
   def by(mediaType: MediaType): List[Entry] = list.filter(_.mediaType == mediaType.toString)
   def byMediaType(mediaType: String): List[Entry] = by(MediaType(mediaType))
+
+  def tags: List[String] = list.flatMap(_.tags).distinct.sorted
+  

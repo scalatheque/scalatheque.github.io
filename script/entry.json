@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "title": "Cellular Automata for video games",
+    "link": "https://www.youtube.com/watch?v=JEPHf9n3Dgc",
+    "mediaType": "Video",
+    "authorId": "maciej_gorywoda",
+    "categoryId": "collections",
+    "tags": [
+      "ai"
+    ],
+    "description": "bla bla blabla bla",
+    "created": "",
+    "added": "2023-09-10"
+  }
+]

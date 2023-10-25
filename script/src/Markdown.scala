@@ -1,9 +1,14 @@
+import ScalathequePaths.*
+
+import java.nio.file.{Files, Path, Paths, StandardOpenOption}
+import java.nio.file.StandardOpenOption.{CREATE, TRUNCATE_EXISTING, WRITE}
+
 object Markdown:
   final case class PrefixConfiguration(authorPrefix: Boolean = true, categoryPrefix: Boolean = true, tagsPrefix: Boolean = true)
   val AllPrefixesEnabled: PrefixConfiguration = PrefixConfiguration()
 
   def from(sb: StringBuilder, entry: Entry, prefixConf: PrefixConfiguration): Unit =
-    sb.append(s"<details>\n<summary>(${entry.title})[${entry.link}]")
+    sb.append(s"<details>\n<summary>[${entry.title}](${entry.link})")
     if prefixConf.authorPrefix then
       Author.get(entry.authorId).foreach { author => sb.append(" by ").append(author.name) }
     if prefixConf.categoryPrefix then
@@ -56,3 +61,22 @@ object Markdown:
     val sb = new StringBuilder
     rec(sb, cat)
     sb.result
+
+  private final case class GenerateMd(template: Path, md: Path, contents: () => String)
+  private val GenerateCategories = GenerateMd(CategoriesTemplate, CategoriesMd, () => Category.topCategories.map(from).mkString("\n\n"))
+  private val GenerateTags = GenerateMd(TagsTemplate, TagsMd, () => Entry.tags.map(from).mkString("\n\n"))
+  private val GenerateAuthors = GenerateMd(AuthorsTemplate, AuthorsMd, () => Author.list.map(from).mkString("\n\n"))
+
+  private def generate(metadata: GenerateMd, replaceFile: Boolean): String =
+    val template = Files.readString(metadata.template)
+    val contents = metadata.contents()
+    val result = template.replace("<!-- GENERATED -->", contents)
+    if replaceFile then
+      Files.writeString(metadata.md, result, CREATE, WRITE, TRUNCATE_EXISTING)
+    result
+
+  def generateCategories(replaceFile: Boolean = false): String = generate(GenerateCategories, replaceFile)
+
+  def generateTags(replaceFile: Boolean = false): String = generate(GenerateTags, replaceFile)
+
+  def generateAuthors(replaceFile: Boolean = false): String = generate(GenerateAuthors, replaceFile)

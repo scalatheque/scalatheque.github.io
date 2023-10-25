@@ -28,7 +28,7 @@ object Category extends PrettyStrCompanion[Category]:
     customStorage = Some(CategoryStorage(fileName))
     if resetAtStart then reset()
 
-  private lazy val storage = customStorage.getOrElse(CategoryStorage("category.json"))
+  private lazy val storage = customStorage.getOrElse(CategoryStorage(ScalathequePaths.CategoryJson))
 
   export storage.{modify, addOrModify, list, size, isEmpty, nonEmpty, get, exists, ids}
 
