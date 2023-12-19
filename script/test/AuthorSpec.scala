@@ -26,7 +26,7 @@ class AuthorSpec extends munit.FunSuite:
     val author = Author("Author")
     Author.add(author)
     assertEquals(Author.get(author.id).fold("")(_.name), "Author")
-    Author.changeName(author.id, "Foo")
+    Author.setName(author.id, "Foo")
     assertEquals(Author.get(author.id).fold("")(_.name), "Foo")
     Author.reset()
   }

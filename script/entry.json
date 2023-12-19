@@ -1,16 +1,344 @@
 [
   {
     "id": 1,
-    "title": "Cellular Automata for video games",
-    "link": "https://www.youtube.com/watch?v=JEPHf9n3Dgc",
+    "title": "Programming with Functions #1 - Introduction",
+    "link": "https://makingthematrix.wordpress.com/2020/12/08/programming-with-functions-1-introduction/",
+    "mediaType": "Article",
+    "authorId": "maciej_gorywoda",
+    "categoryId": "fp",
+    "tags": [
+      "fp",
+      "overview"
+    ],
+    "description": "This is the first of a series about FP basics in Scala. It's also my \"manifesto\" of a sort about simplicity in programming. I feel that in our quest to learn Functional Programming we sometimes skip over foundations and dive straight into advanced stuff. In consequence, naturally, the foundations of our code are often shaky. If you start learning FP right now, I'd ask you not to do that. Instead, focus for a while on what this series talks about.",
+    "created": "2020-12-08",
+    "added": "2023-09-26"
+  },
+  {
+    "id": 2,
+    "title": "Programming with Functions #1 - Introduction",
+    "link": "https://youtu.be/FNQ7OsCSpc8?si=X5iG4QFHQXrmPrB_",
     "mediaType": "Video",
     "authorId": "maciej_gorywoda",
-    "categoryId": "collections",
+    "categoryId": "fp",
     "tags": [
-      "ai"
+      "fp",
+      "overview"
     ],
-    "description": "bla bla blabla bla",
-    "created": "",
-    "added": "2023-09-10"
+    "description": "This is the first of a series about FP basics in Scala. It's also my \"manifesto\" of a sort about simplicity in programming. I feel that in our quest to learn Functional Programming we sometimes skip over foundations and dive straight into advanced stuff. In consequence, naturally, the foundations of our code are often shaky. If you start learning FP right now, I'd ask you not to do that. Instead, focus for a while on what this series talks about.",
+    "created": "2020-12-08",
+    "added": "2023-09-26"
+  },
+  {
+    "id": 3,
+    "title": "Programming with Functions #2 - Functions as Data",
+    "link": "https://youtu.be/RX1_EJp9Vxk?si=IxigMYjBCM4aduLc",
+    "mediaType": "Video",
+    "authorId": "maciej_gorywoda",
+    "categoryId": "fp",
+    "tags": [
+      "collections",
+      "fp"
+    ],
+    "description": "\nIn short (or tl;dw - \"too long; didn't watch\") this video boils down to:\n1. Befriend your standard collections library. It's quite possible that somewhere there is a method which can save you a lot of work.\n2. Learn how to use the types to precisely describe what your code is doing and, thanks to that, avoid corner cases.\n",
+    "created": "2020-12-15",
+    "added": "2023-09-26"
+  },
+  {
+    "id": 4,
+    "title": "Programming with Functions #3 - Pattern Matching",
+    "link": "https://youtu.be/GzVpWORuVqE?si=2n7KP9FMO7uEd--l",
+    "mediaType": "Video",
+    "authorId": "maciej_gorywoda",
+    "categoryId": "fp",
+    "tags": [
+      "pattern matching",
+      "fp"
+    ],
+    "description": "I'm talking about foundations here: pattern matching as The Feature of Scala, case classes, the `apply` method, and sealed traits. But the idea I want to convey is that with these simple constructs you can design your code around data. So, instead of big object-oriented design patterns, you can have just data structures and code handling them in a clear and concise way.\nThis is again a bit like a first half of a longer episode that will cover also the next video, the one about \"unapply\" and the newtype pattern. Because of that, you may expect the next video soon, and then again a longer break before the episode #5.",
+    "created": "2021-01-26",
+    "added": "2023-12-01"
+  },
+  {
+    "id": 5,
+    "title": "Programming with Functions #4 - unapply and newtype",
+    "link": "https://youtu.be/83DmfRHQxfE?si=1y2bYrtrus8Iw-MM",
+    "mediaType": "Video",
+    "authorId": "maciej_gorywoda",
+    "categoryId": "fp",
+    "tags": [
+      "pattern matching",
+      "fp"
+    ],
+    "description": "This is a direct continuation of the previous video in this series, the one about the \"apply\" method. Start there if you missed it. In short, in both videos I want to argue that programs are there to handle data, and so, the way we model data should be at the core of how we design our code. All the object-oriented patterns we are so used to are secondary to that.",
+    "created": "2021-02-09",
+    "added": "2023-12-01"
+  },
+  {
+    "id": 6,
+    "title": "Programming with Functions #5 - Immutability",
+    "link": "https://youtu.be/E8JB99wis7A?si=vr8zpmasozmEbCQI",
+    "mediaType": "Video",
+    "authorId": "maciej_gorywoda",
+    "categoryId": "fp",
+    "tags": [
+      "fp"
+    ],
+    "description": "Immutability and pączki. \nAnd how do you think, where is the border? Where do you decide that enough is enough and reach for ArrayBuffer?",
+    "created": "2021-03-02",
+    "added": "2023-12-01"
+  },
+  {
+    "id": 7,
+    "title": "Programming with Functions #6 - Thread safety",
+    "link": "https://youtu.be/4kvZR3jgcds?si=69iyGbikQnBaGb_Q",
+    "mediaType": "Video",
+    "authorId": "maciej_gorywoda",
+    "categoryId": "fp",
+    "tags": [
+      "concurrency",
+      "fp"
+    ],
+    "description": "The simple answer to how immutability helps with thread safety is — basically the same as with laziness. If data does not change it means that any number of threads can access it at any moment and they don’t mess with each other. But of course, the whole point of running a program is that we want to do something with data, not just read it. Data on which the program operates has to be mutated at some point in time, and so if the program runs on two or more threads, those threads can access the data and get different results. There is no silver bullet here. Functional Programming will not save you from all bugs originating from shared access to mutable data. But it will help with it.",
+    "created": "2021-03-23",
+    "added": "2023-12-01"
+  },
+  {
+    "id": 8,
+    "title": "Programming with Functions #7: Expressions over statements",
+    "link": "https://youtu.be/1fOQGGK0Ydo?si=AlPm0iTgIXkVFNAk",
+    "mediaType": "Video",
+    "authorId": "maciej_gorywoda",
+    "categoryId": "fp",
+    "tags": [
+      "fp"
+    ],
+    "description": "Another idea you may already know but not associate with functional programming is that of an expression — as opposed to a statement. When writing code in the imperative style we build functions with statements. It’s how we order the program to do something: get data from here, modify it like that, save it there. From this point of view, the main purpose of a function is to modify the state of the program — that is, data outside the function itself. But in school, in mathematics, we also learned about functions, and they were not like that. Instead of modifying anything, they used the arguments to produce a new result. They were expressions.",
+    "created": "2021-05-25",
+    "added": "2023-12-01"
+  },
+  {
+    "id": 9,
+    "title": "Programming with Functions #8: Monads",
+    "link": "https://youtu.be/KZCoBTRBRMs?si=aRsKQscmsxhaT9z6",
+    "mediaType": "Video",
+    "authorId": "maciej_gorywoda",
+    "categoryId": "fp",
+    "tags": [
+      "fp",
+      "monads"
+    ],
+    "description": "Monads. The you know what. That dreaded word. Monoids in the category of endofunctors. Burritos with rules. They have a bad reputation as unclear, overcomplicated structures which nobody really can explain. But are they? In my opinion, if you understand flatMap, you're good to go.",
+    "created": "2021-06-13",
+    "added": "2023-12-01"
+  },
+  {
+    "id": 10,
+    "title": "Programming with Functions #9: Try, for-comprehensions, and monadic laws",
+    "link": "https://youtu.be/iq8sTiYc5qM?si=Oczj_8OZVkrIAkrF",
+    "mediaType": "Video",
+    "authorId": "maciej_gorywoda",
+    "categoryId": "fp",
+    "tags": [
+      "fp",
+      "monads"
+    ],
+    "description": "This is a continuation of the previous video. There we talked about Option, Either, and how to use them instead of throwing exceptions, here we talk about one more simple monad, Try, about the monadic laws, and about for-comprehensions - syntactic sugar which makes flatmaps much more readable.",
+    "created": "2021-10-19",
+    "added": "2023-12-01"
+  },
+  {
+    "id": 11,
+    "title": "Programming with Functions #10: Composition over inheritance",
+    "link": "https://youtu.be/fy2HxUxtylw?si=GenwpLzAIgwBwju_",
+    "mediaType": "Video",
+    "authorId": "maciej_gorywoda",
+    "categoryId": "fp",
+    "tags": [
+      "fp",
+      "composition",
+      "inheritance"
+    ],
+    "description": "This is the last video in the \"Programming with Functions\" series. Here I talk about inheritance and composition, but also mocks, and code architecure with traits. It turned out to be more goofy than I planned.  Brace for some lame jokes.",
+    "created": "2022-02-08",
+    "added": "2023-12-01"
+  },
+  {
+    "id": 12,
+    "title": "Cellular Automata for video games",
+    "link": "https://youtu.be/JEPHf9n3Dgc?si=Mwmn_x0GzIXg12hP",
+    "mediaType": "Video",
+    "authorId": "maciej_gorywoda",
+    "categoryId": "ai",
+    "tags": [
+      "fp",
+      "ai",
+      "video games"
+    ],
+    "description": "The cell. The board. The neighbourhood. The rules. The loop.\nIn this video I want to convince you that a lot of what we see in video games - and, by extension, in real life - can be split and modelled with those five concepts. And since we can do that, we can put it in code in the same, or at least very similar way.",
+    "created": "2023-09-02",
+    "added": "2023-12-01"
+  },
+  {
+    "id": 13,
+    "title": "Programming with Functions #2 - Functions as Data",
+    "link": "https://makingthematrix.wordpress.com/2020/12/15/programming-with-functions-2-functions-as-data/",
+    "mediaType": "Article",
+    "authorId": "maciej_gorywoda",
+    "categoryId": "fp",
+    "tags": [
+      "collections",
+      "fp"
+    ],
+    "description": "\nIn short (or tl;dw - \"too long; didn't watch\") this video boils down to:\n1. Befriend your standard collections library. It's quite possible that somewhere there is a method which can save you a lot of work.\n2. Learn how to use the types to precisely describe what your code is doing and, thanks to that, avoid corner cases.\n",
+    "created": "2020-12-15",
+    "added": "2023-09-26"
+  },
+  {
+    "id": 14,
+    "title": "Programming with Functions #3 - Pattern Matching",
+    "link": "https://makingthematrix.wordpress.com/2021/01/26/programming-with-functions-3-pattern-matching/",
+    "mediaType": "Article",
+    "authorId": "maciej_gorywoda",
+    "categoryId": "fp",
+    "tags": [
+      "pattern matching",
+      "fp"
+    ],
+    "description": "I'm talking about foundations here: pattern matching as The Feature of Scala, case classes, the `apply` method, and sealed traits. But the idea I want to convey is that with these simple constructs you can design your code around data. So, instead of big object-oriented design patterns, you can have just data structures and code handling them in a clear and concise way.\nThis is again a bit like a first half of a longer episode that will cover also the next video, the one about \"unapply\" and the newtype pattern. Because of that, you may expect the next video soon, and then again a longer break before the episode #5.",
+    "created": "2021-01-26",
+    "added": "2023-12-01"
+  },
+  {
+    "id": 15,
+    "title": "Programming with Functions #4 - unapply and newtype",
+    "link": "https://makingthematrix.wordpress.com/2021/02/09/programming-with-functions-4-the-unapply-method-and-the-newtype-pattern/",
+    "mediaType": "Article",
+    "authorId": "maciej_gorywoda",
+    "categoryId": "fp",
+    "tags": [
+      "pattern matching",
+      "fp"
+    ],
+    "description": "This is a direct continuation of the previous video in this series, the one about the \"apply\" method. Start there if you missed it. In short, in both videos I want to argue that programs are there to handle data, and so, the way we model data should be at the core of how we design our code. All the object-oriented patterns we are so used to are secondary to that.",
+    "created": "2021-02-09",
+    "added": "2023-12-01"
+  },
+  {
+    "id": 16,
+    "title": "Programming with Functions #5 - Immutability",
+    "link": "https://makingthematrix.wordpress.com/2021/03/02/programming-with-functions-5-immutability/",
+    "mediaType": "Article",
+    "authorId": "maciej_gorywoda",
+    "categoryId": "fp",
+    "tags": [
+      "fp"
+    ],
+    "description": "Immutability and pączki. \nAnd how do you think, where is the border? Where do you decide that enough is enough and reach for ArrayBuffer?",
+    "created": "2021-03-02",
+    "added": "2023-12-01"
+  },
+  {
+    "id": 17,
+    "title": "Programming with Functions #6 - Thread safety",
+    "link": "https://makingthematrix.wordpress.com/2021/03/23/programming-with-functions-6-thread-safety/",
+    "mediaType": "Article",
+    "authorId": "maciej_gorywoda",
+    "categoryId": "fp",
+    "tags": [
+      "concurrency",
+      "fp"
+    ],
+    "description": "The simple answer to how immutability helps with thread safety is — basically the same as with laziness. If data does not change it means that any number of threads can access it at any moment and they don’t mess with each other. But of course, the whole point of running a program is that we want to do something with data, not just read it. Data on which the program operates has to be mutated at some point in time, and so if the program runs on two or more threads, those threads can access the data and get different results. There is no silver bullet here. Functional Programming will not save you from all bugs originating from shared access to mutable data. But it will help with it.",
+    "created": "2021-03-23",
+    "added": "2023-12-01"
+  },
+  {
+    "id": 18,
+    "title": "Programming with Functions #7: Expressions over statements",
+    "link": "https://makingthematrix.wordpress.com/2021/05/25/programming-with-functions-7-expressions-over-statements/",
+    "mediaType": "Article",
+    "authorId": "maciej_gorywoda",
+    "categoryId": "fp",
+    "tags": [
+      "fp"
+    ],
+    "description": "Another idea you may already know but not associate with functional programming is that of an expression — as opposed to a statement. When writing code in the imperative style we build functions with statements. It’s how we order the program to do something: get data from here, modify it like that, save it there. From this point of view, the main purpose of a function is to modify the state of the program — that is, data outside the function itself. But in school, in mathematics, we also learned about functions, and they were not like that. Instead of modifying anything, they used the arguments to produce a new result. They were expressions.",
+    "created": "2021-05-25",
+    "added": "2023-12-01"
+  },
+  {
+    "id": 19,
+    "title": "Programming with Functions #8: Monads",
+    "link": "https://makingthematrix.wordpress.com/2021/07/13/programming-with-functions-8-that-dreaded-word/",
+    "mediaType": "Article",
+    "authorId": "maciej_gorywoda",
+    "categoryId": "fp",
+    "tags": [
+      "fp",
+      "monads"
+    ],
+    "description": "Monads. The you know what. That dreaded word. Monoids in the category of endofunctors. Burritos with rules. They have a bad reputation as unclear, overcomplicated structures which nobody really can explain. But are they? In my opinion, if you understand flatMap, you're good to go.",
+    "created": "2021-06-13",
+    "added": "2023-12-01"
+  },
+  {
+    "id": 20,
+    "title": "Programming with Functions #9: Try, for-comprehensions, and monadic laws",
+    "link": "https://makingthematrix.wordpress.com/2021/10/19/programming-with-functions-9-try-laws-and-for-comprehensions/",
+    "mediaType": "Article",
+    "authorId": "maciej_gorywoda",
+    "categoryId": "fp",
+    "tags": [
+      "fp",
+      "monads"
+    ],
+    "description": "This is a continuation of the previous video. There we talked about Option, Either, and how to use them instead of throwing exceptions, here we talk about one more simple monad, Try, about the monadic laws, and about for-comprehensions - syntactic sugar which makes flatmaps much more readable.",
+    "created": "2021-10-19",
+    "added": "2023-12-01"
+  },
+  {
+    "id": 21,
+    "title": "Programming with Functions #10: Composition over inheritance",
+    "link": "https://makingthematrix.wordpress.com/2022/02/08/programming-with-functions-10-composition-over-inheritance/",
+    "mediaType": "Article",
+    "authorId": "maciej_gorywoda",
+    "categoryId": "fp",
+    "tags": [
+      "fp",
+      "composition",
+      "inheritance"
+    ],
+    "description": "This is the last video in the \"Programming with Functions\" series. Here I talk about inheritance and composition, but also mocks, and code architecure with traits. It turned out to be more goofy than I planned.  Brace for some lame jokes.",
+    "created": "2022-02-08",
+    "added": "2023-12-01"
+  },
+  {
+    "id": 22,
+    "title": "Many happy early returns",
+    "link": "https://makingthematrix.wordpress.com/2021/03/09/many-happy-early-returns/",
+    "mediaType": "Article",
+    "authorId": "maciej_gorywoda",
+    "categoryId": "syntax",
+    "tags": [
+      "syntax"
+    ],
+    "description": "I decided to write this article because I remember that back when I started to learn Scala around 2013-2014 the problem of how to return early from a loop actually happened to me a few times",
+    "created": "2021-03-09",
+    "added": "2023-12-01"
+  },
+  {
+    "id": 23,
+    "title": "Scala on Android",
+    "link": "https://makingthematrix.wordpress.com/2021/03/17/scala-on-android/",
+    "mediaType": "Article",
+    "authorId": "maciej_gorywoda",
+    "categoryId": "syntax",
+    "tags": [
+      "syntax"
+    ],
+    "description": "This is the first article from a short series I want to make about writing Scala on Android. This one is a transcription of a talk I gave at ScalaLove In The City in February 2021. I think it serves well as an introduction. For four years now I develop the Android client of Wire, an end-to-end encrypted messenger, written in Scala. In Android we deal a lot with events coming from many sources: the user, the backend, the Android OS itself. The code we write has to be very reactive — and it should also be concise and able to process all those events concurrently to squeeze all we can from limited resources. Scala should thrive under those conditions. And yet, it’s almost non-existent.", 
+    "created": "2021-03-17",
+    "added": "2023-12-01"
   }
 ]

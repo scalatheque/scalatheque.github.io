@@ -32,6 +32,8 @@ object Category extends PrettyStrCompanion[Category]:
 
   export storage.{modify, addOrModify, list, size, isEmpty, nonEmpty, get, exists, ids}
 
+  def showAll: Unit = showAll(list)
+
   private var current: Option[String] = None
 
   def getCurrent: Category = current.flatMap(get).get
@@ -39,6 +41,12 @@ object Category extends PrettyStrCompanion[Category]:
   def use(cat: Category): Unit =
     current = Some(cat.id)
 
+  def use(categoryId: String): Boolean = get(categoryId) match
+    case Some(cat) => use(cat); true
+    case None => false
+
+  def useLast: Unit = list.lastOption.foreach(use)
+  
   def reset(): Unit =
     storage.reset()
     current = None
@@ -61,16 +69,16 @@ object Category extends PrettyStrCompanion[Category]:
   inline def remove(ids: String*): Unit = removeAll(ids.toList)
   def removeAll(ids: Iterable[String]): Unit = ids.foreach(remove)
 
-  private def changeField(id: String, change: Category => Category): Option[Category] =
+  private def setField(id: String, change: Category => Category): Option[Category] =
     get(id).map {
       change(_).tap(modify)
     }
 
-  def changeName(id: String, newName: String): Option[Category] = changeField(id, _.copy(name = newName))
-  def changeName(newName: String): Option[Category] = current.flatMap{ changeName(_, newName) }
+  def setName(id: String, newName: String): Option[Category] = setField(id, _.copy(name = newName))
+  def setName(newName: String): Option[Category] = current.flatMap{ setName(_, newName) }
 
-  def changeParent(id: String, newParentId: String): Option[Category] = changeField(id, _.copy(parentId = newParentId))
-  def changeParent(newParentId: String): Option[Category] = current.flatMap { changeParent(_, newParentId) }
+  def setParent(id: String, newParentId: String): Option[Category] = setField(id, _.copy(parentId = newParentId))
+  def setParent(newParentId: String): Option[Category] = current.flatMap { setParent(_, newParentId) }
 
   def topCategories: List[Category] = list.filter(_.isTopCategory)
   def children(parentId: String): List[Category] =

@@ -35,7 +35,7 @@ class CategorySpec extends munit.FunSuite:
     val category = Category("cat1", "Category", "")
     Category.add(category)
     assertEquals(Category.get("cat1").fold("")(_.name), "Category")
-    Category.changeName("cat1", "Foo")
+    Category.setName("cat1", "Foo")
     assertEquals(Category.get("cat1").fold("")(_.name), "Foo")
     Category.reset()
   }

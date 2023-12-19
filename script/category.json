@@ -3,5 +3,25 @@
     "id": "collections",
     "name": "Collections",
     "parentId": ""
+  },
+  {
+    "id": "fp",
+    "name": "Functional Programming",
+    "parentId": ""
+  },
+  {
+    "id": "ai",
+    "name": "Artificial Intelligence",
+    "parentId": ""
+  },
+  {
+    "id": "syntax",
+    "name": "Scala syntax",
+    "parentId": ""
+  },
+  {
+    "id": "android",
+    "name": "Scala on Android",
+    "parentId": ""
   }
 ]

@@ -37,12 +37,20 @@ object Author extends PrettyStrCompanion[Author]:
 
   export storage.{modify, addOrModify, list, size, isEmpty, nonEmpty, get, exists, ids}
 
+  def showAll: Unit = showAll(list)
+
   private var current: Option[String] = None
-  
+
   def getCurrent: Author = current.flatMap(get).get
 
   def use(author: Author): Unit =
     current = Some(author.id)
+
+  def use(authorId: String): Boolean = get(authorId) match
+    case Some(author) => use(author); true
+    case None => false
+
+  def useLast: Unit = list.lastOption.foreach(use)
 
   def reset(): Unit =
     storage.reset()
@@ -61,22 +69,22 @@ object Author extends PrettyStrCompanion[Author]:
   inline def remove(ids: String*): Unit = removeAll(ids.toList)
   def removeAll(ids: Iterable[String]): Unit = ids.foreach(remove)
 
-  private def changeField(id: String, change: Author => Author): Option[Author] = get(id).map { change(_).tap(modify) }
+  private def setField(id: String, change: Author => Author): Option[Author] = get(id).map { change(_).tap(modify) }
 
-  def changeName(id: String, newName: String): Option[Author] = changeField(id, _.copy(name = newName))
-  def changeName(newName: String): Option[Author] = current.flatMap{ changeName(_, newName) }
+  def setName(id: String, newName: String): Option[Author] = setField(id, _.copy(name = newName))
+  def setName(newName: String): Option[Author] = current.flatMap{ setName(_, newName) }
 
-  def changeEmail(id: String, newEmail: String): Option[Author] = changeField(id, _.copy(email = newEmail))
-  def changeEmail(newEmail: String): Option[Author] = current.flatMap{ changeEmail(_, newEmail) }
+  def setEmail(id: String, newEmail: String): Option[Author] = setField(id, _.copy(email = newEmail))
+  def setEmail(newEmail: String): Option[Author] = current.flatMap{ setEmail(_, newEmail) }
 
-  def changeTwitter(id: String, newTwitter: String): Option[Author] = changeField(id, _.copy(twitter = newTwitter))
-  def changeTwitter(newTwitter: String): Option[Author] = current.flatMap{ changeTwitter(_, newTwitter) }
+  def setTwitter(id: String, newTwitter: String): Option[Author] = setField(id, _.copy(twitter = newTwitter))
+  def setTwitter(newTwitter: String): Option[Author] = current.flatMap{ setTwitter(_, newTwitter) }
 
-  def changeWebsite(id: String, newWebsite: String): Option[Author] = changeField(id, _.copy(website = newWebsite))
-  def changeWebsite(newWebsite: String): Option[Author] = current.flatMap{ changeWebsite(_, newWebsite) }
+  def setWebsite(id: String, newWebsite: String): Option[Author] = setField(id, _.copy(website = newWebsite))
+  def setWebsite(newWebsite: String): Option[Author] = current.flatMap{ setWebsite(_, newWebsite) }
 
-  def changeYoutube(id: String, newYoutube: String): Option[Author] = changeField(id, _.copy(youtube = newYoutube))
-  def changeYoutube(newYoutube: String): Option[Author] = current.flatMap{ changeYoutube(_, newYoutube) }
+  def setYoutube(id: String, newYoutube: String): Option[Author] = setField(id, _.copy(youtube = newYoutube))
+  def setYoutube(newYoutube: String): Option[Author] = current.flatMap{ setYoutube(_, newYoutube) }
 
-  def changeAvatar(id: String, newAvatar: String): Option[Author] = changeField(id, _.copy(avatar = newAvatar))
-  def changeAvatar(newAvatar: String): Option[Author] = current.flatMap{ changeAvatar(_, newAvatar) }
+  def setAvatar(id: String, newAvatar: String): Option[Author] = setField(id, _.copy(avatar = newAvatar))
+  def setAvatar(newAvatar: String): Option[Author] = current.flatMap{ setAvatar(_, newAvatar) }
