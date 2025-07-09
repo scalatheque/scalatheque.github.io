@@ -1,3 +1,4 @@
-//> using scala 3.3.1
-//> using dep com.lihaoyi::upickle::3.1.3
-//> using dep org.scalameta::munit::0.7.29
+//> using scala 3.3.3
+//> using dep com.lihaoyi::upickle::4.1.0
+//> using dep org.scalameta::munit::1.1.0
+//> using dep com.lihaoyi::cask:0.10.2

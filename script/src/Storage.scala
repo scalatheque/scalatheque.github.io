@@ -1,9 +1,12 @@
 
 import java.nio.file.{Files, Path, Paths, StandardOpenOption}
+import java.nio.file
 import java.nio.file.StandardOpenOption.{CREATE, TRUNCATE_EXISTING, WRITE}
 import scala.util.{Failure, Success, Try}
 import Logger.*
-import upickle.default.{write, read, ReadWriter}
+
+import java.nio.file.attribute.FileAttribute
+import upickle.default.*
 
 class Storage[Id : Ordering, Entry <: Identifiable[Id] : ReadWriter](jsonFileStr: String):
   private lazy val storageFilePath: Option[Path] =
@@ -70,7 +73,7 @@ class Storage[Id : Ordering, Entry <: Identifiable[Id] : ReadWriter](jsonFileStr
       true
 
   inline def add(newEntries: Entry*): Unit = addAll(newEntries.toList)
-
+    
   def addAll(newEntries: Iterable[Entry]): Unit =
     if newEntries.nonEmpty then
       val distinctNewEntries = newEntries.toList.distinctBy(_.id)
@@ -78,7 +81,7 @@ class Storage[Id : Ordering, Entry <: Identifiable[Id] : ReadWriter](jsonFileStr
         error(s"Some of the new entries have duplicated ids and were ignored: ${newEntries.toSet -- distinctNewEntries.toSet}")
       val oldEntries = list
       val oldEntriesIds = oldEntries.ids
-      val (news, refusedEntries) = distinctNewEntries.partition(el => !oldEntriesIds.contains(el.id))
+      val (news: List[Entry], refusedEntries: List[Entry]) = distinctNewEntries.partition(el => !oldEntriesIds.contains(el.id))
       if refusedEntries.nonEmpty then
         error(s"Some of the entries were refused: $refusedEntries")
       if news.nonEmpty then dump(news ::: oldEntries)
@@ -97,7 +100,7 @@ class Storage[Id : Ordering, Entry <: Identifiable[Id] : ReadWriter](jsonFileStr
   def modifyAll(entries: Iterable[Entry]): Unit =
     if entries.nonEmpty then
       val oldEntries = list
-      val (validEntries, notStoredEntries) = entries.partition(e => ids.contains(e.id))
+      val (validEntries: Iterable[Entry], notStoredEntries: Iterable[Entry]) = entries.partition(e => ids.contains(e.id))
       if notStoredEntries.nonEmpty then
         error(s"Some of the entries you try to modify are not in the storage: $notStoredEntries")
       if validEntries.nonEmpty then
